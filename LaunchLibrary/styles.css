@@ -1,0 +1,75 @@
+body{
+    background-image: url(background.jpg);
+    color: white;
+}
+
+img{
+    max-width: 200px;
+    max-height: 200px;
+}
+
+div{
+    border-style: solid;
+}
+
+h4{
+    text-align: center;
+}
+
+.card {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.card img {
+    max-width: 100%; 
+    height: auto;
+}
+
+nav ul{
+    list-style-type: none;
+    display: flex;
+    justify-content: space-between;
+    padding: 0;
+    margin: 0;
+}
+
+nav li{
+    margin: 0 10px;
+}
+
+nav a{
+    text-decoration: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    color: white;
+}
+
+nav a:hover{
+    background-color: #0056b3;
+}
+
+#workingarea{
+    margin: 100px;
+}
+
+#launchCont{
+    align-content: center;
+}
+
+@media screen and (max-width: 768px) {
+    .container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .card {
+        width: 100%; 
+        max-width: 300px; 
+        margin-bottom: 20px; 
+    }
+}

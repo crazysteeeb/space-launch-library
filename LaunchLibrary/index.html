@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!--
+        Author: Steve Ward
+    -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Launches API</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+   <header>
+        <h1 style="text-align: center;">Astronomy is Fun!</h1>
+   </header>
+    <nav>
+        <ul>
+            <li><a href="#" id="GetLaunches">Launches</a></li>
+            <li><a href="#" id="GetAstronauts">Astronauts</a></li>
+        </ul>
+    </nav>
+    <div id="workingarea">
+        <div id="AstroCont" class="container"></div>
+        <div id="launchCont" class="container" style="display: none;"></div>
+    </div>
+
+    <script>
+        
+        //Events for when we click the a tag of the specific title it calls the method to get the api data
+        document.getElementById('GetAstronauts').addEventListener('click', GetAstro);
+        document.getElementById('GetLaunches').addEventListener('click', GetLaunches);
+
+        //Initial load of the window when we open so calling the api to get the astronauts data
+        GetAstro();
+        //function to get atronaugts
+        function GetAstro(){
+            //setting a constant to represents the XML request
+            const astroRequest = new XMLHttpRequest();
+            //Getting the info from the API
+            astroRequest.open("get", "https://lldev.thespacedevs.com/2.3.0/astronauts/?limit=10&offset=10");
+            astroRequest.onreadystatechange = function(){
+                //Ensure that the status code is good and the readstate is good
+                if(astroRequest.readyState == 4 && astroRequest.status == 200){
+                    //Make the info usable setting it into a constant
+                    const astro = JSON.parse(astroRequest.responseText);
+                    //Log the info for easier view
+                    console.log(astro);
+                    //call the function to display the results of the JSON file into the window
+                    displayAstro(astro.results);
+                }
+            }
+            //Send the data
+            astroRequest.send();
+        }
+        //Function to display the info with the const being used
+        function displayAstro(astro){
+            //Set initially to empty 
+            document.getElementById('AstroCont').innerHTML = '';
+            //remove the launch information if it was displayed
+            document.getElementById('launchCont').style.display = 'none';
+            //Allow the container to be flex
+            document.getElementById('AstroCont').style.display = 'flex';
+            //loop through each object and slice it to where we will only use the first four items
+            astro.slice(0,4).forEach(element => {
+                //If the object doesnt have a image move on to the next object
+                if(!element.image || !element.image.image_url){
+                    return;
+                }
+                //create a div for the elements to be placed in
+                const astroDiv = document.createElement('div');
+                //add a card
+                astroDiv.classList.add('card')
+                //determine what items get place into the view
+                astroDiv.innerHTML = `
+                <h4>${element.name}</h4>
+                <p>Age: ${element.age}<br>Total Flights: ${element.flights_count}</p>
+                <img src="${element.image.image_url }">
+                <p>${element.bio}</p>
+                `;
+                //put the package of information into the div by appending the child
+                document.getElementById('AstroCont').appendChild(astroDiv);
+            });
+        }
+        //function to get the launches from the api
+        function GetLaunches(){
+            //instatiate the request
+            const launchRequest = new XMLHttpRequest();
+            //open it from the API for the launches
+            launchRequest.open("get", "https://lldev.thespacedevs.com/2.3.0/launches/?limit=10&offset=10");
+            launchRequest.onreadystatechange = function(){
+                //Ensure a good status and readyState
+                if(launchRequest.readyState == 4 && launchRequest.status == 200){
+                    //parse the information
+                    const launch = JSON.parse(launchRequest.responseText);
+                    //log all the data
+                    console.log(launch);
+                    //call the function to display the launch data passing through the launch results
+                    displayLaunch(launch.results);
+                }
+            }
+            //Send the data
+            launchRequest.send();
+        }
+        //Function to display the launch information
+        function displayLaunch(launch){
+            //Set it to be initially null
+            document.getElementById('launchCont').innerHTML = ' ';
+            //Set the container for the astro to be null
+            document.getElementById('AstroCont').style.display = 'none';
+            //set container to flex
+            document.getElementById('launchCont').style.display = 'flex';
+            //loop through each object slicing out the first four
+            launch.slice(0,4).forEach(element =>{
+                //ensure the object has an image otherwise move to the next object
+                if(!element.image || !element.image.image_url){
+                    return;
+                }
+                //create the div
+                const launchDiv = document.createElement('div');
+                //add the card
+                launchDiv.classList.add('card')
+                //Create the view depending on the objects I am using
+                launchDiv.innerHTML = `
+                <h4>${element.name}</h4>
+                <p>Provider: ${element.launch_service_provider.name}</p>
+                <img src="${element.image.image_url}">
+                <p>${element.status.name}:<br><br>${element.status.description}</p>
+                `;
+                //Append the view with the new information
+                document.getElementById('launchCont').appendChild(launchDiv);
+            })
+        }
+
+    </script>
+</body>
+</html>
